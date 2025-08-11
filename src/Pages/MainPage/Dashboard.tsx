@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface DashboardStats {
   totalCourses: number;
@@ -27,7 +27,6 @@ interface RecentActivity {
 }
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('overview');
   const [stats] = useState<DashboardStats>({
     totalCourses: 12,
     completedCourses: 8,

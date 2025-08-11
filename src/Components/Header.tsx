@@ -8,7 +8,7 @@ const Header: React.FC<HeaderProps> = ({ className = '' }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
-  const [notifications, setNotifications] = useState([
+  const [notifications] = useState([
     { id: 1, message: 'New study material available', time: '2 min ago', unread: true },
     { id: 2, message: 'Practice test scheduled for tomorrow', time: '1 hour ago', unread: true },
     { id: 3, message: 'Assignment deadline reminder', time: '3 hours ago', unread: false }

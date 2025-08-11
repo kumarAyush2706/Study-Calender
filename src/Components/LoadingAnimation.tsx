@@ -41,7 +41,7 @@ const LoadingAnimation: React.FC = () => {
       </div>
 
       {/* Custom CSS for progress animation */}
-      <style jsx>{`
+      <style>{`
         @keyframes progress {
           0% { width: 0%; }
           50% { width: 70%; }

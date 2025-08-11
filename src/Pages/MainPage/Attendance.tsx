@@ -89,8 +89,6 @@ const Attendance: React.FC = () => {
   // Get current date for highlighting today
   const today = new Date();
   const currentDate = today.getDate();
-  const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11
-  const currentYear = today.getFullYear();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 px-4 sm:px-6 lg:px-8 py-8">
