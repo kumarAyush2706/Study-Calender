@@ -2,12 +2,96 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>NCLEX Calendar - Professional Nursing Study Platform</title>
+    <meta name="title" content="NCLEX Calendar - Professional Nursing Study Platform" />
+    <meta name="description" content="Comprehensive NCLEX preparation platform with daily recordings, courses, assignments, and study materials. Prepare for your nursing career with expert instructors and structured learning." />
+    <meta name="keywords" content="NCLEX, nursing, study platform, nursing courses, NCLEX-RN, NCLEX-PN, nursing education, nursing preparation, nursing students" />
+    <meta name="author" content="NCLEX Calendar" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nclex-calendar.com/" />
+    <meta property="og:title" content="NCLEX Calendar - Professional Nursing Study Platform" />
+    <meta property="og:description" content="Comprehensive NCLEX preparation platform with daily recordings, courses, assignments, and study materials." />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://nclex-calendar.com/" />
+    <meta property="twitter:title" content="NCLEX Calendar - Professional Nursing Study Platform" />
+    <meta property="twitter:description" content="Comprehensive NCLEX preparation platform with daily recordings, courses, assignments, and study materials." />
+    <meta property="twitter:image" content="/og-image.png" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Theme Color for mobile browsers -->
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="msapplication-TileColor" content="#4f46e5" />
+    
+    <!-- Additional Meta Tags -->
+    <meta name="application-name" content="NCLEX Calendar" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="NCLEX Calendar" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "NCLEX Calendar",
+      "description": "Professional nursing study platform for NCLEX preparation",
+      "url": "https://nclex-calendar.com",
+      "logo": "https://nclex-calendar.com/logo.png",
+      "sameAs": [
+        "https://facebook.com/nclexcalendar",
+        "https://twitter.com/nclexcalendar",
+        "https://linkedin.com/company/nclexcalendar"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "support@nclexcalendar.com"
+      }
+    }
+    </script>
   </head>
   <body>
+    <noscript>
+      <div style="text-align: center; padding: 20px; font-family: Arial, sans-serif;">
+        <h1>NCLEX Calendar</h1>
+        <p>This application requires JavaScript to run. Please enable JavaScript in your browser to continue.</p>
+      </div>
+    </noscript>
+    
     <div id="root"></div>
+    
+    <!-- Main Application Script -->
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Performance monitoring and analytics can be added here -->
+    <script>
+      // Performance monitoring
+      window.addEventListener('load', function() {
+        if ('performance' in window) {
+          const perfData = performance.getEntriesByType('navigation')[0];
+          console.log('Page Load Time:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+        }
+      });
+    </script>
   </body>
 </html>
