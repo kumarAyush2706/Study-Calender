@@ -43,14 +43,14 @@ const Dashboard: React.FC = () => {
       progress: 85,
       status: 'in-progress',
       nextClass: 'Today, 2:00 PM',
-      instructor: 'Dr. Sarah Johnson'
+      instructor: 'Dr. Priya Sharma'
     },
     {
       id: '2',
       name: 'Medical-Surgical Nursing',
       progress: 100,
       status: 'completed',
-      instructor: 'Dr. Michael Chen'
+      instructor: 'Dr. Amit Singh'
     },
     {
       id: '3',
@@ -58,14 +58,14 @@ const Dashboard: React.FC = () => {
       progress: 60,
       status: 'in-progress',
       nextClass: 'Tomorrow, 10:00 AM',
-      instructor: 'Dr. Emily Rodriguez'
+      instructor: 'Dr. Anjali Patel'
     },
     {
       id: '4',
       name: 'Mental Health Nursing',
       progress: 0,
       status: 'not-started',
-      instructor: 'Dr. James Wilson'
+      instructor: 'Dr. Ravi Menon'
     }
   ]);
 

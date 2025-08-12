@@ -9,6 +9,12 @@ import Courses from './Courses';
 import MyCourses from './MyCourses';
 import UpComingClasses from './UpComingClasses';
 import StudyMaterial from './StudyMaterial';
+import Assignment from './Assignment';
+import AssignmentReport from './AssignmentReport';
+import DailyRecording from './DailyRecording';
+import SavedRecording from './SavedRecording';
+import PurchaseHistory from './PurchaseHistory';
+import SharedRecording from './SharedRecording';
 
 const MainPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -39,6 +45,18 @@ const MainPage: React.FC = () => {
         return <UpComingClasses />;
       case 'study-material':
         return <StudyMaterial />;
+      case 'assessments':
+        return <Assignment />;
+      case 'assignment-report':
+        return <AssignmentReport />;
+      case 'daily-recordings':
+        return <DailyRecording />;
+      case 'shared-recordings':
+        return <SharedRecording />;
+      case 'saved-recordings':
+        return <SavedRecording />;
+      case 'purchase-history':
+        return <PurchaseHistory />;
       default:
         return (
           <div className="p-8">
