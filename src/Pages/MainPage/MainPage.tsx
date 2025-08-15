@@ -20,6 +20,7 @@ import Feedback from './Feedback';
 const MainPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const handleNavigation = (page: string) => {
     setIsLoading(true);
@@ -27,7 +28,17 @@ const MainPage: React.FC = () => {
     setTimeout(() => {
       setCurrentPage(page);
       setIsLoading(false);
+      // Close sidebar on mobile after navigation
+      setIsSidebarOpen(false);
     }, 800);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
   };
 
   const renderContent = () => {
@@ -71,12 +82,20 @@ const MainPage: React.FC = () => {
   return (
     <div className="flex h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
       {/* Sidebar */}
-      <SideBar onNavigate={handleNavigation} isLoading={isLoading} />
+      <SideBar 
+        onNavigate={handleNavigation} 
+        isLoading={isLoading} 
+        isOpen={isSidebarOpen}
+        onClose={closeSidebar}
+      />
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <Header />
+        <Header 
+          onToggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
         
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto relative">
