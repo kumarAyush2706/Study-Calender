@@ -111,9 +111,9 @@ const About: React.FC<AboutProps> = () => {
                   : 'opacity-0 translate-y-8'
               } text-lg lg:text-xl text-gray-600 mb-10 leading-relaxed`}
             >
-              Start your rewarding nursing journey with GE Academy Ltd., where commitment and expertise drive success. 
+              Start your rewarding nursing journey with GE Academy Ltd., where commitment and expertise drive success in NCLEX, DHA, and international nursing exams. 
               Led by our esteemed founder, Ramandeep Kaur, our team is dedicated to helping you reach your goals. 
-              Enjoy tailored guidance, simplified application steps, and top-notch exam preparation support, setting 
+              Enjoy tailored guidance, simplified application steps, and top-notch exam preparation support for NCLEX RN, DHA licensing, and more, setting 
               you on the path to fulfilling your nursing dreams.
             </p>
             
@@ -153,7 +153,7 @@ const About: React.FC<AboutProps> = () => {
                   </svg>
                 </div>
                 <span className="text-gray-700 text-base lg:text-lg leading-relaxed group-hover:text-gray-900 transition-colors duration-300">
-                  Join our exam prep programs and experience an impressive 98% pass rate.
+                  Join our NCLEX, DHA, and exam prep programs and experience an impressive 98% pass rate.
                 </span>
               </div>
             </div>

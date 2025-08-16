@@ -74,12 +74,12 @@ const Services: React.FC<ServicesProps> = () => {
     },
     {
       id: 3,
-      title: "PTE",
-      description: "Boost your PTE score with expert guidance, personalized plans, and focused practice for success.",
+      title: "DHA Exam",
+      description: "Prepare for Dubai Health Authority (DHA) licensing exam with comprehensive study materials and expert guidance.",
       image: "/pte.jpg",
-      color: "blue",
-      icon: "🎯",
-      features: ["Expert guidance", "Personalized plans", "Focused practice"]
+      color: "green",
+      icon: "🏛️",
+      features: ["Comprehensive study materials", "Expert guidance", "Practice tests"]
     }
   ];
 
@@ -172,9 +172,11 @@ const Services: React.FC<ServicesProps> = () => {
                    
                    {/* Floating Badge */}
                    <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-white ${
-                     service.color === 'orange' ? 'bg-orange-500' : 'bg-blue-600'
+                     service.color === 'orange' ? 'bg-orange-500' : 
+                     service.color === 'green' ? 'bg-green-600' : 'bg-blue-600'
                    } shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-500`}>
-                     {service.color === 'orange' ? 'IELTS' : 'NCLEX'}
+                     {service.color === 'orange' ? 'IELTS' : 
+                      service.color === 'green' ? 'DHA' : 'NCLEX'}
                    </div>
                  </div>
                 
@@ -182,7 +184,8 @@ const Services: React.FC<ServicesProps> = () => {
                 <div className="p-8">
                   {/* Title with enhanced styling */}
                   <h3 className={`text-2xl font-bold mb-4 ${
-                    service.color === 'orange' ? 'text-orange-600' : 'text-blue-800'
+                    service.color === 'orange' ? 'text-orange-600' : 
+                    service.color === 'green' ? 'text-green-600' : 'text-blue-800'
                   } group-hover:scale-105 transition-transform duration-300`}>
                     {service.title}
                   </h3>
@@ -197,7 +200,8 @@ const Services: React.FC<ServicesProps> = () => {
                     {service.features.map((feature, idx) => (
                       <div key={idx} className="flex items-center space-x-3">
                         <div className={`w-2 h-2 rounded-full ${
-                          service.color === 'orange' ? 'bg-orange-500' : 'bg-blue-500'
+                          service.color === 'orange' ? 'bg-orange-500' : 
+                          service.color === 'green' ? 'bg-green-500' : 'bg-blue-500'
                         }`}></div>
                         <span className="text-sm text-gray-600">{feature}</span>
                       </div>
@@ -208,7 +212,8 @@ const Services: React.FC<ServicesProps> = () => {
                   <a 
                     href="#" 
                     className={`inline-flex items-center font-semibold text-sm transition-all duration-300 group-hover:underline ${
-                      service.color === 'orange' ? 'text-orange-600 hover:text-orange-700' : 'text-blue-600 hover:text-blue-700'
+                      service.color === 'orange' ? 'text-orange-600 hover:text-orange-700' : 
+                      service.color === 'green' ? 'text-green-600 hover:text-green-700' : 'text-blue-600 hover:text-blue-700'
                     }`}
                   >
                     Learn more
@@ -222,6 +227,8 @@ const Services: React.FC<ServicesProps> = () => {
                 <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${
                   service.color === 'orange' 
                     ? 'from-orange-400 to-orange-600' 
+                    : service.color === 'green'
+                    ? 'from-green-400 to-green-600'
                     : 'from-blue-400 to-blue-600'
                 } transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}></div>
               </div>

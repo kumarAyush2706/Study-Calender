@@ -56,8 +56,9 @@ const Home: React.FC = () => {
   const statistics: Statistic[] = [
     { id: '1', number: '2000', label: 'Nurses in Canada', suffix: '+' },
     { id: '2', number: '1500', label: 'Nurses in USA & Australia', suffix: '+' },
-    { id: '3', number: '10', label: 'Years of Experience', suffix: '+' },
-    { id: '4', number: '98', label: 'Success Rate', suffix: '%' }
+    { id: '3', number: '500', label: 'DHA Licensed Nurses', suffix: '+' },
+    { id: '4', number: '10', label: 'Years of Experience', suffix: '+' },
+    { id: '5', number: '98', label: 'Success Rate', suffix: '%' }
   ];
 
   return (
@@ -85,7 +86,7 @@ const Home: React.FC = () => {
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Start your rewarding nursing journey with GE Academy Ltd., where commitment and expertise drive success. 
+              Start your rewarding nursing journey with GE Academy Ltd., where commitment and expertise drive success in NCLEX, DHA, and international nursing exams. 
               Led by our esteemed founder, Ramandeep Kaur, our team is dedicated to helping you reach your goals.
             </p>
 
@@ -111,7 +112,7 @@ const Home: React.FC = () => {
       {/* Statistics Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             {statistics.map((stat, index) => (
               <div
                 key={stat.id}
@@ -150,7 +151,7 @@ const Home: React.FC = () => {
               <span className="text-gray-900">GE Academy?</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Discover the key features that make us the preferred choice for nursing education and NCLEX preparation.
+              Discover the key features that make us the preferred choice for nursing education, NCLEX preparation, and DHA licensing.
             </p>
           </div>
           
@@ -215,12 +216,12 @@ const Home: React.FC = () => {
                   
                   {/* Title */}
                   <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-yellow-200 transition-colors duration-300">
-                    NCLEX RN/REX PN Preparation
+                    NCLEX RN/REX PN & DHA Exam
                   </h3>
                   
                   {/* Description */}
                   <p className="text-white/90 text-lg leading-relaxed">
-                    We provide the support you need to succeed in NCLEX RN and REX PN exams.
+                    We provide the support you need to succeed in NCLEX RN, REX PN, and DHA licensing exams.
                   </p>
                   
                   {/* Hover Effect Line */}

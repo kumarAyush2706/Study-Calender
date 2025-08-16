@@ -18,149 +18,149 @@ const UpComingClasses: React.FC = () => {
 
   // Mock data for the whole month
   const scheduledEvents: ScheduledEvent[] = [
-    // Week 1
+    // Week 1 - NCLEX RN Classes
     {
       id: '1',
-      title: 'Trial lecture _name_AKANSHA K',
+      title: 'NCLEX RN Fundamentals Review',
       date: '2025-06-17',
-      duration: '60 Min',
-      courseLevel: 'French B2',
-      startTime: '20:00 IST',
+      duration: '90 Min',
+      courseLevel: 'NCLEX RN',
+      startTime: '19:00 IST',
       meetingId: '88246216381',
-      password: 'TLS@123',
+      password: 'NCLEX@123',
       type: 'classes',
       hasCancelOption: true
     },
     {
       id: '2',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'NCLEX RN Practice Questions',
       date: '2025-06-18',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '120 Min',
+      courseLevel: 'NCLEX RN',
+      startTime: '20:00 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
     {
       id: '3',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'NCLEX RN Test Strategies',
       date: '2025-06-19',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '90 Min',
+      courseLevel: 'NCLEX RN',
+      startTime: '19:30 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
     {
       id: '4',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'NCLEX RN Critical Thinking',
       date: '2025-06-20',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '120 Min',
+      courseLevel: 'NCLEX RN',
+      startTime: '20:00 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
-    // Week 2
+    // Week 2 - IELTS Classes
     {
       id: '5',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'IELTS Reading Strategies',
       date: '2025-06-23',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '90 Min',
+      courseLevel: 'IELTS',
+      startTime: '18:00 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'IELTS@123',
       type: 'classes'
     },
     {
       id: '6',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'IELTS Writing Task 2',
       date: '2025-06-24',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '120 Min',
+      courseLevel: 'IELTS',
+      startTime: '19:00 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'IELTS@123',
       type: 'classes'
     },
     {
       id: '7',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'IELTS Speaking Practice',
       date: '2025-06-25',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '90 Min',
+      courseLevel: 'IELTS',
+      startTime: '18:30 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'IELTS@123',
       type: 'classes'
     },
     {
       id: '8',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'IELTS Listening Skills',
       date: '2025-06-26',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '90 Min',
+      courseLevel: 'IELTS',
+      startTime: '19:00 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'IELTS@123',
       type: 'classes'
     },
-    // Week 3
+    // Week 3 - PTE Classes
     {
       id: '9',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'PTE Speaking & Pronunciation',
       date: '2025-06-27',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
-      password: 'TLS@123',
+      duration: '90 Min',
+      courseLevel: 'PTE',
+      startTime: '20:00 IST',
+      password: 'PTE@123',
       meetingId: '82575371817',
       type: 'classes'
     },
     {
       id: '10',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'PTE Writing & Grammar',
       date: '2025-06-30',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '120 Min',
+      courseLevel: 'PTE',
+      startTime: '19:00 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'PTE@123',
       type: 'classes'
     },
-    // Week 4
+    // Week 4 - DHA Exam Classes
     {
       id: '11',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'DHA Exam Fundamentals',
       date: '2025-07-01',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '120 Min',
+      courseLevel: 'DHA Exam',
+      startTime: '20:00 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'DHA@123',
       type: 'classes'
     },
     {
       id: '12',
-      title: 'TEF A1 6am- 7 am Mon-Fri',
+      title: 'DHA Clinical Practice',
       date: '2025-07-02',
-      duration: '60 Min',
-      courseLevel: 'French A1',
-      startTime: '06:00 IST',
+      duration: '90 Min',
+      courseLevel: 'DHA Exam',
+      startTime: '19:30 IST',
       meetingId: '82575371817',
-      password: 'TLS@123',
+      password: 'DHA@123',
       type: 'classes'
     },
     // Webinars
     {
       id: '13',
-      title: 'French Grammar Masterclass',
+      title: 'NCLEX RN Success Strategies',
       date: '2025-06-22',
-      duration: '90 Min',
+      duration: '120 Min',
       courseLevel: 'All Levels',
       startTime: '15:00 IST',
       meetingId: '99887766554',
@@ -169,13 +169,35 @@ const UpComingClasses: React.FC = () => {
     },
     {
       id: '14',
-      title: 'IELTS Speaking Practice',
+      title: 'IELTS Band 7+ Masterclass',
       date: '2025-06-29',
-      duration: '120 Min',
-      courseLevel: 'Intermediate',
+      duration: '150 Min',
+      courseLevel: 'Advanced',
       startTime: '14:00 IST',
       meetingId: '11223344556',
       password: 'IELTS@789',
+      type: 'webinars'
+    },
+    {
+      id: '15',
+      title: 'DHA Licensing Roadmap',
+      date: '2025-07-05',
+      duration: '90 Min',
+      courseLevel: 'All Levels',
+      startTime: '16:00 IST',
+      meetingId: '99887766555',
+      password: 'DHA@456',
+      type: 'webinars'
+    },
+    {
+      id: '16',
+      title: 'PTE vs IELTS Comparison',
+      date: '2025-07-06',
+      duration: '120 Min',
+      courseLevel: 'All Levels',
+      startTime: '15:30 IST',
+      meetingId: '11223344557',
+      password: 'COMP@789',
       type: 'webinars'
     }
   ];
@@ -209,7 +231,8 @@ const UpComingClasses: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-10">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Scheduled Meetings</h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">Upcoming Classes & Webinars</h1>
+          <p className="text-xl text-gray-600 mb-6">Join our expert-led sessions for NCLEX RN, IELTS, PTE, and DHA Exam preparation</p>
           
           {/* Tab Navigation */}
           <div className="flex space-x-12 border-b-2 border-gray-200">
@@ -221,7 +244,7 @@ const UpComingClasses: React.FC = () => {
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              <span className="text-xl tracking-wide">SCHEDULED CLASSES</span>
+              <span className="text-xl tracking-wide">EXAM PREP CLASSES</span>
               {activeTab === 'classes' && (
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-t-full shadow-lg"></div>
               )}

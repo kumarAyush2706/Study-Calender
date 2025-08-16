@@ -24,7 +24,7 @@ const Faq: React.FC<FaqProps> = () => {
     {
       id: 1,
       question: "What services does Ge Academy Ltd. offer for nursing students?",
-      answer: "We provide personalized guidance, application assistance, and comprehensive exam preparation to help you succeed in your nursing career."
+      answer: "We provide personalized guidance, application assistance, and comprehensive exam preparation for NCLEX RN, DHA licensing, and other international nursing exams to help you succeed in your nursing career."
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ const Faq: React.FC<FaqProps> = () => {
     {
       id: 3,
       question: "What are the pass rates for your exam preparation programs?",
-      answer: "Our exam preparation programs have consistently high pass rates, with over 90% of our students successfully passing their nursing exams on the first attempt."
+      answer: "Our exam preparation programs have consistently high pass rates, with over 90% of our students successfully passing their NCLEX, DHA, and other nursing exams on the first attempt."
     },
     {
       id: 4,
@@ -45,6 +45,11 @@ const Faq: React.FC<FaqProps> = () => {
       id: 5,
       question: "Can I get personalized guidance tailored to my career goals?",
       answer: "Absolutely! We provide personalized guidance and career counseling tailored to your specific nursing career goals and aspirations."
+    },
+    {
+      id: 6,
+      question: "Do you offer DHA exam preparation?",
+      answer: "Yes! We provide comprehensive DHA (Dubai Health Authority) licensing exam preparation with study materials, practice tests, and expert guidance to help you succeed in your Dubai nursing career."
     }
   ];
 
@@ -107,7 +112,7 @@ const Faq: React.FC<FaqProps> = () => {
             Frequently Asked Questions
           </h2>
           <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
-            Find answers to common questions about our nursing programs, services, and how we can support your career journey.
+            Find answers to common questions about our NCLEX, DHA, and nursing programs, services, and how we can support your career journey.
           </p>
         </div>
 

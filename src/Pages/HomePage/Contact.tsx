@@ -82,7 +82,7 @@ const Contact: React.FC<ContactProps> = () => {
           
           {/* Description */}
           <p className="text-xl lg:text-2xl text-white/90 leading-relaxed max-w-4xl mx-auto mb-8">
-            Schedule a consultation with our expert team to discuss your nursing career goals and how we can assist you. 
+            Schedule a consultation with our expert team to discuss your nursing career goals, NCLEX preparation, DHA licensing, and how we can assist you. 
             Fill out the form below, and we'll get back to you shortly!
           </p>
           
