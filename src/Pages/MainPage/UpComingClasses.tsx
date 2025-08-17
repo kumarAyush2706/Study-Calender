@@ -18,13 +18,13 @@ const UpComingClasses: React.FC = () => {
 
   // Mock data for the whole month
   const scheduledEvents: ScheduledEvent[] = [
-    // Week 1 - NCLEX RN Classes
+    // Week 1 - NCLEX-RN Classes
     {
       id: '1',
-      title: 'NCLEX RN Fundamentals Review',
+      title: 'NCLEX-RN Fundamentals Review',
       date: '2025-06-17',
       duration: '90 Min',
-      courseLevel: 'NCLEX RN',
+      courseLevel: 'NCLEX-RN',
       startTime: '19:00 IST',
       meetingId: '88246216381',
       password: 'NCLEX@123',
@@ -33,10 +33,10 @@ const UpComingClasses: React.FC = () => {
     },
     {
       id: '2',
-      title: 'NCLEX RN Practice Questions',
+      title: 'NCLEX-RN Practice Questions',
       date: '2025-06-18',
       duration: '120 Min',
-      courseLevel: 'NCLEX RN',
+      courseLevel: 'NCLEX-RN',
       startTime: '20:00 IST',
       meetingId: '82575371817',
       password: 'NCLEX@123',
@@ -44,10 +44,10 @@ const UpComingClasses: React.FC = () => {
     },
     {
       id: '3',
-      title: 'NCLEX RN Test Strategies',
+      title: 'NCLEX-RN Test Strategies',
       date: '2025-06-19',
       duration: '90 Min',
-      courseLevel: 'NCLEX RN',
+      courseLevel: 'NCLEX-RN',
       startTime: '19:30 IST',
       meetingId: '82575371817',
       password: 'NCLEX@123',
@@ -55,110 +55,110 @@ const UpComingClasses: React.FC = () => {
     },
     {
       id: '4',
-      title: 'NCLEX RN Critical Thinking',
+      title: 'NCLEX-RN Critical Thinking',
       date: '2025-06-20',
       duration: '120 Min',
-      courseLevel: 'NCLEX RN',
+      courseLevel: 'NCLEX-RN',
       startTime: '20:00 IST',
       meetingId: '82575371817',
       password: 'NCLEX@123',
       type: 'classes'
     },
-    // Week 2 - IELTS Classes
+    // Week 2 - More NCLEX-RN Classes
     {
       id: '5',
-      title: 'IELTS Reading Strategies',
+      title: 'NCLEX-RN Pharmacology Review',
       date: '2025-06-23',
       duration: '90 Min',
-      courseLevel: 'IELTS',
+      courseLevel: 'NCLEX-RN',
       startTime: '18:00 IST',
       meetingId: '82575371817',
-      password: 'IELTS@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
     {
       id: '6',
-      title: 'IELTS Writing Task 2',
+      title: 'NCLEX-RN Medical-Surgical Nursing',
       date: '2025-06-24',
       duration: '120 Min',
-      courseLevel: 'IELTS',
+      courseLevel: 'NCLEX-RN',
       startTime: '19:00 IST',
       meetingId: '82575371817',
-      password: 'IELTS@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
     {
       id: '7',
-      title: 'IELTS Speaking Practice',
+      title: 'NCLEX-RN Pediatric Nursing',
       date: '2025-06-25',
       duration: '90 Min',
-      courseLevel: 'IELTS',
+      courseLevel: 'NCLEX-RN',
       startTime: '18:30 IST',
       meetingId: '82575371817',
-      password: 'IELTS@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
     {
       id: '8',
-      title: 'IELTS Listening Skills',
+      title: 'NCLEX-RN Mental Health Nursing',
       date: '2025-06-26',
       duration: '90 Min',
-      courseLevel: 'IELTS',
+      courseLevel: 'NCLEX-RN',
       startTime: '19:00 IST',
       meetingId: '82575371817',
-      password: 'IELTS@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
-    // Week 3 - PTE Classes
+    // Week 3 - Advanced NCLEX-RN Classes
     {
       id: '9',
-      title: 'PTE Speaking & Pronunciation',
+      title: 'NCLEX-RN Leadership & Management',
       date: '2025-06-27',
       duration: '90 Min',
-      courseLevel: 'PTE',
+      courseLevel: 'NCLEX-RN',
       startTime: '20:00 IST',
-      password: 'PTE@123',
+      password: 'NCLEX@123',
       meetingId: '82575371817',
       type: 'classes'
     },
     {
       id: '10',
-      title: 'PTE Writing & Grammar',
+      title: 'NCLEX-RN Community Health',
       date: '2025-06-30',
       duration: '120 Min',
-      courseLevel: 'PTE',
+      courseLevel: 'NCLEX-RN',
       startTime: '19:00 IST',
       meetingId: '82575371817',
-      password: 'PTE@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
-    // Week 4 - DHA Exam Classes
+    // Week 4 - Final NCLEX-RN Classes
     {
       id: '11',
-      title: 'DHA Exam Fundamentals',
+      title: 'NCLEX-RN Comprehensive Review',
       date: '2025-07-01',
       duration: '120 Min',
-      courseLevel: 'DHA Exam',
+      courseLevel: 'NCLEX-RN',
       startTime: '20:00 IST',
       meetingId: '82575371817',
-      password: 'DHA@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
     {
       id: '12',
-      title: 'DHA Clinical Practice',
+      title: 'NCLEX-RN Mock Exam Practice',
       date: '2025-07-02',
       duration: '90 Min',
-      courseLevel: 'DHA Exam',
+      courseLevel: 'NCLEX-RN',
       startTime: '19:30 IST',
       meetingId: '82575371817',
-      password: 'DHA@123',
+      password: 'NCLEX@123',
       type: 'classes'
     },
-    // Webinars
+    // NCLEX-RN Webinars
     {
       id: '13',
-      title: 'NCLEX RN Success Strategies',
+      title: 'NCLEX-RN Success Strategies',
       date: '2025-06-22',
       duration: '120 Min',
       courseLevel: 'All Levels',
@@ -169,35 +169,35 @@ const UpComingClasses: React.FC = () => {
     },
     {
       id: '14',
-      title: 'IELTS Band 7+ Masterclass',
+      title: 'NCLEX-RN Study Plan Masterclass',
       date: '2025-06-29',
       duration: '150 Min',
-      courseLevel: 'Advanced',
+      courseLevel: 'All Levels',
       startTime: '14:00 IST',
       meetingId: '11223344556',
-      password: 'IELTS@789',
+      password: 'NCLEX@789',
       type: 'webinars'
     },
     {
       id: '15',
-      title: 'DHA Licensing Roadmap',
+      title: 'NCLEX-RN Exam Day Tips',
       date: '2025-07-05',
       duration: '90 Min',
       courseLevel: 'All Levels',
       startTime: '16:00 IST',
       meetingId: '99887766555',
-      password: 'DHA@456',
+      password: 'NCLEX@456',
       type: 'webinars'
     },
     {
       id: '16',
-      title: 'PTE vs IELTS Comparison',
+      title: 'NCLEX-RN Question Analysis',
       date: '2025-07-06',
       duration: '120 Min',
       courseLevel: 'All Levels',
       startTime: '15:30 IST',
       meetingId: '11223344557',
-      password: 'COMP@789',
+      password: 'NCLEX@789',
       type: 'webinars'
     }
   ];
@@ -231,8 +231,8 @@ const UpComingClasses: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-10">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Upcoming Classes & Webinars</h1>
-          <p className="text-xl text-gray-600 mb-6">Join our expert-led sessions for NCLEX RN, IELTS, PTE, and DHA Exam preparation</p>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">NCLEX-RN Classes & Webinars</h1>
+          <p className="text-xl text-gray-600 mb-6">Join our expert-led NCLEX-RN preparation sessions to ace your nursing exam</p>
           
           {/* Tab Navigation */}
           <div className="flex space-x-12 border-b-2 border-gray-200">

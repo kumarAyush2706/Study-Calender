@@ -20,132 +20,142 @@ const StudyMaterial: React.FC = () => {
   const [sortField, setSortField] = useState<keyof StudyNote>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-  // Mock data for study materials
+  // Updated study materials from assets folder - NCLEX-RN Nursing Systems in requested order
   const studyNotes: StudyNote[] = [
     {
       id: '1',
-      title: 'A1-500 exercises de grammaire',
-      mediaType: 'DOCUMENT',
+      title: 'Fundamental',
+      mediaType: 'PDF',
       date: '2025-06-05',
-      category: 'Grammar',
-      courseLevel: 'French A1',
-      fileSize: '2.4 MB',
-      description: 'Comprehensive grammar exercises for French A1 level students'
+      category: 'Fundamentals',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '825 KB',
+      description: 'Comprehensive fundamentals of nursing practice and patient care principles'
     },
     {
       id: '2',
-      title: 'French Pronunciation Guide',
-      mediaType: 'AUDIO',
+      title: 'Fluid and Electrolytes',
+      mediaType: 'PDF',
       date: '2025-06-04',
-      category: 'Pronunciation',
-      courseLevel: 'French A1',
-      fileSize: '15.2 MB',
-      description: 'Audio guide for proper French pronunciation'
+      category: 'Fluid & Electrolytes',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '233 KB',
+      description: 'Complete guide to fluid and electrolyte balance in nursing practice'
     },
     {
       id: '3',
-      title: 'TEF A1 Vocabulary List',
+      title: 'Respiratory System',
       mediaType: 'PDF',
       date: '2025-06-03',
-      category: 'Vocabulary',
-      courseLevel: 'French A1',
-      fileSize: '1.8 MB',
-      description: 'Essential vocabulary for TEF A1 examination'
+      category: 'Respiratory',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '3.3 MB',
+      description: 'Comprehensive respiratory system notes for NCLEX-RN preparation'
     },
     {
       id: '4',
-      title: 'French Grammar Rules',
-      mediaType: 'DOCUMENT',
+      title: 'Cardiac System',
+      mediaType: 'PDF',
       date: '2025-06-02',
-      category: 'Grammar',
-      courseLevel: 'French A1',
-      fileSize: '3.1 MB',
-      description: 'Complete grammar rules and explanations'
+      category: 'Cardiac',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '10 MB',
+      description: 'Detailed cardiac system notes and cardiovascular nursing care'
     },
     {
       id: '5',
-      title: 'Speaking Practice Scenarios',
-      mediaType: 'VIDEO',
+      title: 'GI System',
+      mediaType: 'PDF',
       date: '2025-06-01',
-      category: 'Speaking',
-      courseLevel: 'French A1',
-      fileSize: '45.7 MB',
-      description: 'Video scenarios for speaking practice'
+      category: 'Gastrointestinal',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '2.1 MB',
+      description: 'Gastrointestinal system nursing notes and digestive care'
     },
     {
       id: '6',
-      title: 'Writing Templates',
-      mediaType: 'DOCUMENT',
+      title: 'Endocrine System',
+      mediaType: 'PDF',
       date: '2025-05-31',
-      category: 'Writing',
-      courseLevel: 'French A1',
-      fileSize: '1.2 MB',
-      description: 'Templates for various writing tasks'
+      category: 'Endocrine',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '1.1 MB',
+      description: 'Complete endocrine system notes and hormonal nursing care'
     },
     {
       id: '7',
-      title: 'Listening Comprehension',
-      mediaType: 'AUDIO',
+      title: 'Renal Diseases',
+      mediaType: 'PDF',
       date: '2025-05-30',
-      category: 'Listening',
-      courseLevel: 'French A1',
-      fileSize: '28.3 MB',
-      description: 'Audio files for listening practice'
+      category: 'Renal',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '206 KB',
+      description: 'Urinary system notes and renal disease nursing care'
     },
     {
       id: '8',
-      title: 'Reading Passages',
+      title: 'Reproductive System',
       mediaType: 'PDF',
       date: '2025-05-29',
-      category: 'Reading',
-      courseLevel: 'French A1',
-      fileSize: '2.9 MB',
-      description: 'Reading passages with comprehension questions'
+      category: 'Reproductive',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '291 KB',
+      description: 'Comprehensive reproductive system notes and women\'s health nursing'
     },
     {
       id: '9',
-      title: 'Grammar Quiz Bank',
-      mediaType: 'DOCUMENT',
+      title: 'Skin and Burn',
+      mediaType: 'PDF',
       date: '2025-05-28',
-      category: 'Grammar',
-      courseLevel: 'French A1',
-      fileSize: '4.2 MB',
-      description: 'Collection of grammar quizzes and tests'
+      category: 'Dermatology',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '402 KB',
+      description: 'Skin assessment and burn care nursing notes'
     },
     {
       id: '10',
-      title: 'Cultural Notes',
-      mediaType: 'PRESENTATION',
+      title: 'Eye and Ear',
+      mediaType: 'PDF',
       date: '2025-05-27',
-      category: 'Culture',
-      courseLevel: 'French A1',
-      fileSize: '8.7 MB',
-      description: 'Presentation on French culture and customs'
+      category: 'Sensory',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '209 KB',
+      description: 'Ophthalmology and otolaryngology nursing care notes'
     },
     {
       id: '11',
-      title: 'Advanced Grammar Concepts',
-      mediaType: 'DOCUMENT',
+      title: 'Neuro (1-2) files',
+      mediaType: 'PDF',
       date: '2025-05-26',
-      category: 'Grammar',
-      courseLevel: 'French B1',
-      fileSize: '5.6 MB',
-      description: 'Advanced grammar concepts for intermediate students'
+      category: 'Neurological',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '548 KB',
+      description: 'Complete neurological system notes and assessment (Parts 1 & 2)'
     },
     {
       id: '12',
-      title: 'Business French Vocabulary',
+      title: 'Musculoskeletal System',
       mediaType: 'PDF',
-      date: '2025-05-25',
-      category: 'Vocabulary',
-      courseLevel: 'French B2',
-      fileSize: '2.1 MB',
-      description: 'Business and professional French vocabulary'
+      date: '2025-05-24',
+      category: 'Musculoskeletal',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '532 KB',
+      description: 'Complete musculoskeletal system notes and orthopedic nursing care'
+    },
+    {
+      id: '13',
+      title: 'Pediatric Disease',
+      mediaType: 'PDF',
+      date: '2025-05-23',
+      category: 'Pediatrics',
+      courseLevel: 'NCLEX-RN',
+      fileSize: '278 KB',
+      description: 'Pediatric nursing notes and infectious disease management'
     }
   ];
 
-  const categories = ['All', 'Grammar', 'Vocabulary', 'Pronunciation', 'Speaking', 'Writing', 'Listening', 'Reading', 'Culture'];
-  const mediaTypes = ['All', 'DOCUMENT', 'VIDEO', 'AUDIO', 'PDF', 'PRESENTATION'];
+  const categories = ['All', 'Fundamentals', 'Fluid & Electrolytes', 'Respiratory', 'Cardiac', 'Gastrointestinal', 'Endocrine', 'Renal', 'Reproductive', 'Dermatology', 'Sensory', 'Neurological', 'Musculoskeletal', 'Pediatrics'];
+  const mediaTypes = ['All', 'PDF'];
 
   // Filter and sort data
   const filteredAndSortedData = useMemo(() => {
@@ -244,8 +254,58 @@ const StudyMaterial: React.FC = () => {
   };
 
   const handleViewMaterial = (noteId: string) => {
-    console.log(`Viewing material: ${noteId}`);
-    // Handle view material logic here
+    const note = studyNotes.find(n => n.id === noteId);
+    if (note) {
+      // Create the file path based on the title
+      let fileName = '';
+      switch (note.title) {
+        case 'Fundamental':
+          fileName = 'Fundamental.pdf';
+          break;
+        case 'Fluid and Electrolytes':
+          fileName = 'Fluid and electrolytes Nclex-RN pdf._watermark.pdf';
+          break;
+        case 'Respiratory System':
+          fileName = 'Respiratory system -1 Nclex RN - GE.pdf';
+          break;
+        case 'Cardiac System':
+          fileName = 'Cardiac notes.pdf';
+          break;
+        case 'GI System':
+          fileName = 'GI System notes.pdf';
+          break;
+        case 'Endocrine System':
+          fileName = 'Final Endocrine system notes.pdf';
+          break;
+        case 'Renal Diseases':
+          fileName = 'Urinary system notes.pdf';
+          break;
+        case 'Reproductive System':
+          fileName = 'Reproductive system notes.pdf';
+          break;
+        case 'Skin and Burn':
+          fileName = 'Skin and burn_watermark (1).pdf';
+          break;
+        case 'Eye and Ear':
+          fileName = 'Eye and Ear_watermark.pdf';
+          break;
+        case 'Neuro (1-2) files':
+          fileName = 'Neuro 1_watermark.pdf'; // Will open first neuro file
+          break;
+        case 'Musculoskeletal System':
+          fileName = 'Musculoskeltal system_watermark (1).pdf';
+          break;
+        case 'Pediatric Disease':
+          fileName = 'infectious disease and pediatric notes_watermark.pdf';
+          break;
+        default:
+          fileName = 'Fundamental.pdf';
+      }
+      
+      // Open PDF in new tab
+      const pdfPath = `/assets/${fileName}`;
+      window.open(pdfPath, '_blank');
+    }
   };
 
   return (
@@ -253,7 +313,13 @@ const StudyMaterial: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Course Study Notes</h1>
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            NCLEX-RN Study Materials
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl">
+            Comprehensive study materials covering all major nursing systems for NCLEX-RN preparation. 
+            Access detailed notes on fundamentals, body systems, and specialized nursing care.
+          </p>
         </div>
 
         {/* Controls and Filters */}
@@ -506,10 +572,10 @@ const StudyMaterial: React.FC = () => {
                   <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                 </svg>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Documents</p>
-                <p className="text-2xl font-bold text-gray-900">{studyNotes.filter(n => n.mediaType === 'DOCUMENT').length}</p>
-              </div>
+                              <div>
+                  <p className="text-sm text-gray-600">PDF Documents</p>
+                  <p className="text-2xl font-bold text-gray-900">{studyNotes.length}</p>
+                </div>
             </div>
           </div>
 
