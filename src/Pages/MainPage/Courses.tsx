@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useCourses } from '../../hooks/useAPI';
 
 interface Course {
   id: string;
@@ -31,7 +32,31 @@ const Courses: React.FC = () => {
   const [hoveredCourse, setHoveredCourse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Updated courses organized by exam type
+  // Fetch courses from API
+  const { data: apiCourses, loading, error } = useCourses();
+
+  // Transform API data to match our interface
+  const courses: Course[] = useMemo(() => {
+    if (!apiCourses || !Array.isArray(apiCourses)) return [];
+    
+    return (apiCourses as any[]).map((course: any) => ({
+      id: course.id || String(Math.random()),
+      title: course.title || course.name || 'Untitled Course',
+      category: course.category || 'General',
+      level: course.level || 'Beginner',
+      duration: course.duration || '8 weeks',
+      students: course.students || course.enrolledStudents || 0,
+      rating: course.rating || 4.5,
+      price: course.price || 0,
+      description: course.description || course.summary || 'No description available',
+      instructor: course.instructor || course.teacher || 'Unknown Instructor',
+      image: course.image || 'fundamentals',
+      examType: course.examType || 'NCLEX-RN'
+    }));
+  }, [apiCourses]);
+
+  // Updated courses organized by exam type (commented out - now using API data)
+  /*
   const courses: Course[] = [
     // NCLEX-RN Courses
     {
@@ -349,6 +374,7 @@ const Courses: React.FC = () => {
 
 
   ];
+  */
 
   // Course categories organized by exam type
   const courseCategories: CourseCategory[] = [
@@ -407,7 +433,71 @@ const Courses: React.FC = () => {
     }
     
     return filtered;
-  }, [selectedCategory, searchTerm]);
+  }, [selectedCategory, searchTerm, courseCategories]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+              <p className="text-xl text-gray-600">Loading courses...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Courses</h2>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No data state
+  if (!courses || courses.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V8a2 2 0 00-2-2h-5L9 4H4zm7 5a1 1 0 10-2 0v1H8a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Courses Found</h2>
+              <p className="text-gray-600">There are currently no courses available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const getCategoryColor = (examType: string) => {
     switch (examType) {

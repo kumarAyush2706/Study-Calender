@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useDailyRecordings } from '../../hooks/useAPI';
 
 interface DailyRecording {
   id: number;
@@ -16,7 +17,27 @@ const DailyRecording: React.FC = () => {
   const [selectedTeacher, setSelectedTeacher] = useState('All');
   const [selectedSubject, setSelectedSubject] = useState('All');
 
-  // Mock data for daily recordings - Nursing courses
+  // Fetch daily recordings from API
+  const { data: apiDailyRecordings, loading, error } = useDailyRecordings();
+
+  // Transform API data to match our interface
+  const dailyRecordings: DailyRecording[] = useMemo(() => {
+    if (!apiDailyRecordings || !Array.isArray(apiDailyRecordings)) return [];
+    
+    return (apiDailyRecordings as any[]).map((recording: any) => ({
+      id: recording.id || Math.floor(Math.random() * 1000),
+      title: recording.title || recording.name || 'Untitled Recording',
+      courseLevel: recording.courseLevel || recording.level || recording.examType || 'NCLEX-RN',
+      teacher: recording.teacher || recording.instructor || recording.teacherName || 'Unknown Instructor',
+      date: recording.date || recording.recordedDate || recording.createdAt || new Date().toLocaleDateString('en-GB'),
+      timeSlot: recording.timeSlot || recording.duration || recording.length || '9:00 AM - 10:30 AM',
+      schedule: recording.schedule || recording.frequency || 'Monday - Friday',
+      subject: recording.subject || recording.topic || recording.category || 'General Nursing'
+    }));
+  }, [apiDailyRecordings]);
+
+  // Mock data for daily recordings - Nursing courses (commented out - now using API data)
+  /*
   const dailyRecordings: DailyRecording[] = [
     {
       id: 1,
@@ -99,10 +120,23 @@ const DailyRecording: React.FC = () => {
       subject: 'Pharmacology'
     }
   ];
+  */
 
-  const courseLevels = ['All', 'NCLEX-RN', 'NCLEX-PN', 'BSN', 'MSN'];
-  const teachers = ['All', 'Dr. Priya Sharma', 'Dr. Amit Singh', 'Dr. Anjali Patel', 'Prof. Meera Reddy', 'Dr. Ravi Menon', 'Dr. Kavita Desai', 'Dr. Sunita Verma', 'Prof. Rajesh Kumar'];
-  const subjects = ['All', 'Fundamentals of Nursing', 'Cardiac Nursing', 'Respiratory Nursing', 'Renal Nursing', 'Mental Health Nursing', 'Pediatric Nursing', 'Maternity Nursing', 'Pharmacology'];
+  // Generate dynamic filter options from API data
+  const courseLevels = useMemo(() => {
+    const levels = ['All', ...new Set(dailyRecordings.map(r => r.courseLevel))];
+    return levels;
+  }, [dailyRecordings]);
+
+  const teachers = useMemo(() => {
+    const instructorList = ['All', ...new Set(dailyRecordings.map(r => r.teacher))];
+    return instructorList;
+  }, [dailyRecordings]);
+
+  const subjects = useMemo(() => {
+    const subjectList = ['All', ...new Set(dailyRecordings.map(r => r.subject))];
+    return subjectList;
+  }, [dailyRecordings]);
 
   // Filter recordings based on selected filters
   const filteredRecordings = dailyRecordings.filter(recording => {
@@ -121,6 +155,70 @@ const DailyRecording: React.FC = () => {
     console.log(`Saving recording: ${recordingId}`);
     // Handle save recording logic here
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+              <p className="text-xl text-gray-600">Loading daily recordings...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Recordings</h2>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No data state
+  if (!dailyRecordings || dailyRecordings.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Daily Recordings</h2>
+              <p className="text-gray-600">There are currently no daily recordings available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">

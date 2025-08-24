@@ -1,5 +1,4 @@
-import React, { useState, useMemo } from 'react';
-import { useUpcomingClasses } from '../../hooks/useAPI';
+import React, { useState } from 'react';
 
 interface ScheduledEvent {
   id: string;
@@ -14,32 +13,10 @@ interface ScheduledEvent {
   hasCancelOption?: boolean;
 }
 
-const UpComingClasses: React.FC = () => {
+const TeacherUpComingClasses: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'classes' | 'webinars'>('classes');
 
-  // Fetch upcoming classes from API
-  const { data: apiUpcomingClasses, loading, error } = useUpcomingClasses();
-
-  // Transform API data to match our interface
-  const scheduledEvents: ScheduledEvent[] = useMemo(() => {
-    if (!apiUpcomingClasses || !Array.isArray(apiUpcomingClasses)) return [];
-    
-    return (apiUpcomingClasses as any[]).map((classItem: any) => ({
-      id: classItem.id || String(Math.random()),
-      title: classItem.title || classItem.name || 'Untitled Class',
-      date: classItem.date || classItem.scheduledDate || classItem.startDate || new Date().toISOString().split('T')[0],
-      duration: classItem.duration || classItem.length || '90 Min',
-      courseLevel: classItem.courseLevel || classItem.level || 'NCLEX-RN',
-      startTime: classItem.startTime || classItem.time || '19:00 IST',
-      meetingId: classItem.meetingId || classItem.zoomId || classItem.meetingLink || '00000000000',
-      password: classItem.password || classItem.meetingPassword || 'CLASS@123',
-      type: classItem.type || (classItem.isWebinar ? 'webinars' : 'classes'),
-      hasCancelOption: classItem.hasCancelOption || classItem.cancellable || false
-    }));
-  }, [apiUpcomingClasses]);
-
-  // Mock data for the whole month (commented out - now using API data)
-  /*
+  // Mock data for the whole month
   const scheduledEvents: ScheduledEvent[] = [
     // Week 1 - NCLEX-RN Classes
     {
@@ -224,7 +201,6 @@ const UpComingClasses: React.FC = () => {
       type: 'webinars'
     }
   ];
-  */
 
   const filteredEvents = scheduledEvents.filter(event => {
     if (activeTab === 'classes') return event.type === 'classes';
@@ -249,70 +225,6 @@ const UpComingClasses: React.FC = () => {
     console.log(`Canceling demo: ${eventId}`);
     // Handle cancel demo logic here
   };
-
-  // Loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-              <p className="text-xl text-gray-600">Loading upcoming classes...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Classes</h2>
-              <p className="text-gray-600 mb-4">{error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // No data state
-  if (!scheduledEvents || scheduledEvents.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Upcoming Classes</h2>
-              <p className="text-gray-600">There are currently no upcoming classes or webinars scheduled.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -478,4 +390,4 @@ const UpComingClasses: React.FC = () => {
   );
 };
 
-export default UpComingClasses;
+export default TeacherUpComingClasses;

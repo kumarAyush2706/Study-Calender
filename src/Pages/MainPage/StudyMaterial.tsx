@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useStudyMaterials } from '../../hooks/useAPI';
 
 interface StudyNote {
   id: string;
@@ -20,7 +21,27 @@ const StudyMaterial: React.FC = () => {
   const [sortField, setSortField] = useState<keyof StudyNote>('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-  // Updated study materials from assets folder - NCLEX-RN Nursing Systems in requested order
+  // Fetch study materials from API
+  const { data: apiStudyMaterials, loading, error } = useStudyMaterials('1');
+
+  // Transform API data to match our interface
+  const studyNotes: StudyNote[] = useMemo(() => {
+    if (!apiStudyMaterials || !Array.isArray(apiStudyMaterials)) return [];
+    
+    return (apiStudyMaterials as any[]).map((material: any) => ({
+      id: material.id || String(Math.random()),
+      title: material.title || material.name || 'Untitled Material',
+      mediaType: material.mediaType || material.type || material.fileType || 'PDF',
+      date: material.date || material.createdAt || material.updatedAt || new Date().toISOString().split('T')[0],
+      category: material.category || material.subject || 'General',
+      courseLevel: material.courseLevel || material.level || material.examType || 'NCLEX-RN',
+      fileSize: material.fileSize || material.size || 'Unknown',
+      description: material.description || material.summary || 'No description available'
+    }));
+  }, [apiStudyMaterials]);
+
+  // Updated study materials from assets folder - NCLEX-RN Nursing Systems in requested order (commented out - now using API data)
+  /*
   const studyNotes: StudyNote[] = [
     {
       id: '1',
@@ -153,9 +174,18 @@ const StudyMaterial: React.FC = () => {
       description: 'Pediatric nursing notes and infectious disease management'
     }
   ];
+  */
 
-  const categories = ['All', 'Fundamentals', 'Fluid & Electrolytes', 'Respiratory', 'Cardiac', 'Gastrointestinal', 'Endocrine', 'Renal', 'Reproductive', 'Dermatology', 'Sensory', 'Neurological', 'Musculoskeletal', 'Pediatrics'];
-  const mediaTypes = ['All', 'PDF'];
+  // Generate dynamic filter options from API data
+  const categories = useMemo(() => {
+    const cats = ['All', ...new Set(studyNotes.map(note => note.category))];
+    return cats;
+  }, [studyNotes]);
+
+  const mediaTypes = useMemo(() => {
+    const types = ['All', ...new Set(studyNotes.map(note => note.mediaType))];
+    return types;
+  }, [studyNotes]);
 
   // Filter and sort data
   const filteredAndSortedData = useMemo(() => {
@@ -256,57 +286,82 @@ const StudyMaterial: React.FC = () => {
   const handleViewMaterial = (noteId: string) => {
     const note = studyNotes.find(n => n.id === noteId);
     if (note) {
-      // Create the file path based on the title
-      let fileName = '';
-      switch (note.title) {
-        case 'Fundamental':
-          fileName = 'Fundamental.pdf';
-          break;
-        case 'Fluid and Electrolytes':
-          fileName = 'Fluid and electrolytes Nclex-RN pdf._watermark.pdf';
-          break;
-        case 'Respiratory System':
-          fileName = 'Respiratory system -1 Nclex RN - GE.pdf';
-          break;
-        case 'Cardiac System':
-          fileName = 'Cardiac notes.pdf';
-          break;
-        case 'GI System':
-          fileName = 'GI System notes.pdf';
-          break;
-        case 'Endocrine System':
-          fileName = 'Final Endocrine system notes.pdf';
-          break;
-        case 'Renal Diseases':
-          fileName = 'Urinary system notes.pdf';
-          break;
-        case 'Reproductive System':
-          fileName = 'Reproductive system notes.pdf';
-          break;
-        case 'Skin and Burn':
-          fileName = 'Skin and burn_watermark (1).pdf';
-          break;
-        case 'Eye and Ear':
-          fileName = 'Eye and Ear_watermark.pdf';
-          break;
-        case 'Neuro (1-2) files':
-          fileName = 'Neuro 1_watermark.pdf'; // Will open first neuro file
-          break;
-        case 'Musculoskeletal System':
-          fileName = 'Musculoskeltal system_watermark (1).pdf';
-          break;
-        case 'Pediatric Disease':
-          fileName = 'infectious disease and pediatric notes_watermark.pdf';
-          break;
-        default:
-          fileName = 'Fundamental.pdf';
+      // Handle viewing the material based on API data
+      if (note.mediaType === 'PDF' && note.fileSize) {
+        // If it's a PDF, try to open it
+        // You might need to adjust this based on your API response structure
+        console.log('Opening material:', note.title);
+        // You can implement file opening logic here based on your needs
+      } else {
+        // For other media types or if no file info
+        console.log('Viewing material:', note.title);
       }
-      
-      // Open PDF in new tab
-      const pdfPath = `/assets/${fileName}`;
-      window.open(pdfPath, '_blank');
     }
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+              <p className="text-xl text-gray-600">Loading study materials...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Materials</h2>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No data state
+  if (!studyNotes || studyNotes.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V8a2 2 0 00-2-2h-5L9 4H4zm7 5a1 1 0 10-2 0v1H8a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Study Materials Found</h2>
+              <p className="text-gray-600">There are currently no study materials available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">

@@ -1,150 +1,141 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 interface SignUpFormData {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
-  confirmPassword: string;
-  phone: string;
-  dateOfBirth: string;
-  nursingLicense: string;
-  experience: string;
-  agreeToTerms: boolean;
-  agreeToMarketing: boolean;
+  role: string;
 }
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState<SignUpFormData>({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    phone: '',
-    dateOfBirth: '',
-    nursingLicense: '',
-    experience: '',
-    agreeToTerms: false,
-    agreeToMarketing: false
+    role: 'student'
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
-    
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
-
     // Clear error when user starts typing
-    if (errors[name as keyof SignUpFormData]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
-    }
-  };
-
-  const validateStep = (step: number): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (step === 1) {
-      if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-      if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-      if (!formData.email.trim()) newErrors.email = 'Email is required';
-      else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-      if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-    }
-
-    if (step === 2) {
-      if (!formData.password) newErrors.password = 'Password is required';
-      else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
-      if (!formData.confirmPassword) newErrors.confirmPassword = 'Please confirm your password';
-      else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-      if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
-    }
-
-    if (step === 3) {
-      if (!formData.nursingLicense.trim()) newErrors.nursingLicense = 'Nursing license is required';
-      if (!formData.experience) newErrors.experience = 'Please select your experience level';
-      if (!formData.agreeToTerms) newErrors.agreeToTerms = 'You must agree to the terms and conditions';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(prev + 1, 3));
-    }
-  };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
+    if (error) setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateStep(3)) {
       setIsLoading(true);
-      
-      // Simulate API call
-      setTimeout(() => {
+    setError(null);
+    
+    try {
+      const success = await signup(formData.name, formData.email, formData.password, formData.role);
+      if (success) {
+        // Navigate to main page after successful signup
+        navigate('/main');
+      } else {
+        setError('Signup failed. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred during signup. Please try again.');
+    } finally {
         setIsLoading(false);
-        console.log('Sign up attempt:', formData);
-        // Handle signup logic here
-      }, 2000);
     }
   };
 
-  const renderStep1 = () => (
-    <div className="space-y-7">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-        <div className="group">
-          <label htmlFor="firstName" className="block text-sm font-bold text-gray-700 mb-3">
-            First Name *
-          </label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            required
-            className={`w-full px-5 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-              errors.firstName ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-            }`}
-            placeholder="Enter your first name"
-          />
-          {errors.firstName && <p className="mt-2 text-sm text-red-600 font-medium">{errors.firstName}</p>}
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+
+  const fillDummyCredentials = () => {
+    setFormData({
+      name: 'John Doe',
+      email: 'john@example.com',
+      password: 'password123',
+      role: 'student'
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div className="w-full max-w-md">
+          {/* Enhanced Back to Home Button */}
+          <div className="text-center mb-6">
+            <button
+              onClick={handleBackToHome}
+              className="group inline-flex items-center px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-all duration-300 hover:bg-white/70 rounded-2xl backdrop-blur-sm border border-gray-200/50 hover:border-gray-300/50 hover:shadow-lg"
+            >
+              <svg className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+              Back to Home
+            </button>
+          </div>
+
+          {/* Enhanced Sign Up Form */}
+          <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 lg:p-12 overflow-hidden">
+            {/* Decorative background elements */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/20"></div>
+            <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-br from-pink-400/10 to-blue-400/10 rounded-full blur-2xl"></div>
+            
+            {/* Subtle border glow */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 p-[1px]">
+              <div className="h-full w-full bg-white rounded-3xl"></div>
+            </div>
+            
+            {/* Content wrapper */}
+            <div className="relative z-10">
+              {/* Enhanced Logo and Header */}
+              <div className="text-center mb-12"> 
+                <div className="w-20 h-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl mx-auto mb-8 transform hover:scale-110 transition-all duration-500 hover:rotate-3">
+                  <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 leading-tight">
+                  Create Account
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">Join NCLEX Calendar and start your nursing journey</p>
+                
+               
         </div>
 
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Name Field */}
         <div className="group">
-          <label htmlFor="lastName" className="block text-sm font-bold text-gray-700 mb-3">
-            Last Name *
+                  <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-3">
+                    Full Name *
           </label>
           <input
             type="text"
-            id="lastName"
-            name="lastName"
-            value={formData.lastName}
+                    id="name"
+                    name="name"
+                    value={formData.name}
             onChange={handleInputChange}
             required
-            className={`w-full px-5 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-              errors.lastName ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-            }`}
-            placeholder="Enter your last name"
-          />
-          {errors.lastName && <p className="mt-2 text-sm text-red-600 font-medium">{errors.lastName}</p>}
-        </div>
+                    className="w-full px-5 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white"
+                    placeholder="Enter your full name"
+                  />
       </div>
 
+                {/* Email Field */}
       <div className="group">
         <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-3">
           Email Address *
@@ -163,45 +154,13 @@ const SignUp: React.FC = () => {
             value={formData.email}
             onChange={handleInputChange}
             required
-            className={`w-full pl-14 pr-5 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-              errors.email ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-            }`}
+                      className="w-full pl-14 pr-5 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white"
             placeholder="Enter your email address"
           />
         </div>
-        {errors.email && <p className="mt-2 text-sm text-red-600 font-medium">{errors.email}</p>}
       </div>
 
-      <div className="group">
-        <label htmlFor="phone" className="block text-sm font-bold text-gray-700 mb-3">
-          Phone Number *
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-300">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-            </svg>
-          </div>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            required
-            className={`w-full pl-14 pr-5 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-              errors.phone ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-            }`}
-            placeholder="Enter your phone number"
-          />
-        </div>
-        {errors.phone && <p className="mt-2 text-sm text-red-600 font-medium">{errors.phone}</p>}
-      </div>
-    </div>
-  );
-
-  const renderStep2 = () => (
-    <div className="space-y-7">
+                {/* Password Field */}
       <div className="group">
         <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-3">
           Password *
@@ -219,9 +178,7 @@ const SignUp: React.FC = () => {
             value={formData.password}
             onChange={handleInputChange}
             required
-            className={`w-full pl-14 pr-14 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-              errors.password ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-            }`}
+                      className="w-full pl-14 pr-14 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white"
             placeholder="Create a strong password"
           />
           <button
@@ -242,288 +199,49 @@ const SignUp: React.FC = () => {
             )}
           </button>
         </div>
-        {errors.password && <p className="mt-2 text-sm text-red-600 font-medium">{errors.password}</p>}
         <p className="mt-2 text-xs text-gray-500 font-medium">Password must be at least 8 characters long</p>
       </div>
 
+                {/* Role Field */}
       <div className="group">
-        <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-700 mb-3">
-          Confirm Password *
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-300">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <input
-            type={showConfirmPassword ? 'text' : 'password'}
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            required
-            className={`w-full pl-14 pr-14 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-              errors.confirmPassword ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-            }`}
-            placeholder="Confirm your password"
-          />
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
-          >
-            {showConfirmPassword ? (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 4.943 14.478 2 10 2a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
-                <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
-              </svg>
-            )}
-          </button>
-        </div>
-        {errors.confirmPassword && <p className="mt-2 text-sm text-red-600 font-medium">{errors.confirmPassword}</p>}
-      </div>
-
-      <div className="group">
-        <label htmlFor="dateOfBirth" className="block text-sm font-bold text-gray-700 mb-3">
-          Date of Birth *
-        </label>
-        <input
-          type="date"
-          id="dateOfBirth"
-          name="dateOfBirth"
-          value={formData.dateOfBirth}
-          onChange={handleInputChange}
-          required
-          className={`w-full px-5 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-            errors.dateOfBirth ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-          }`}
-        />
-        {errors.dateOfBirth && <p className="mt-2 text-sm text-red-600 font-medium">{errors.dateOfBirth}</p>}
-      </div>
-    </div>
-  );
-
-  const renderStep3 = () => (
-    <div className="space-y-7">
-      <div className="group">
-        <label htmlFor="nursingLicense" className="block text-sm font-bold text-gray-700 mb-3">
-          Nursing License Number *
-        </label>
-        <input
-          type="text"
-          id="nursingLicense"
-          name="nursingLicense"
-          value={formData.nursingLicense}
-          onChange={handleInputChange}
-          required
-          className={`w-full px-5 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-            errors.nursingLicense ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-          }`}
-          placeholder="Enter your nursing license number"
-        />
-        {errors.nursingLicense && <p className="mt-2 text-sm text-red-600 font-medium">{errors.nursingLicense}</p>}
-      </div>
-
-      <div className="group">
-        <label htmlFor="experience" className="block text-sm font-bold text-gray-700 mb-3">
-          Nursing Experience Level *
+                  <label htmlFor="role" className="block text-sm font-bold text-gray-700 mb-3">
+                    Role *
         </label>
         <select
-          id="experience"
-          name="experience"
-          value={formData.experience}
+                    id="role"
+                    name="role"
+                    value={formData.role}
           onChange={handleInputChange}
           required
-          className={`w-full px-5 py-4 bg-white/80 backdrop-blur-sm border-2 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white ${
-            errors.experience ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-200/60'
-          }`}
-        >
-          <option value="">Select your experience level</option>
-          <option value="student">Nursing Student</option>
-          <option value="new-grad">New Graduate</option>
-          <option value="1-2-years">1-2 years</option>
-          <option value="3-5-years">3-5 years</option>
-          <option value="5-10-years">5-10 years</option>
-          <option value="10-plus-years">10+ years</option>
+                    className="w-full px-5 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 text-base font-medium shadow-sm hover:shadow-md group-hover:border-gray-300/80 focus:bg-white"
+                  >
+                    <option value="student">Student</option>
         </select>
-        {errors.experience && <p className="mt-2 text-sm text-red-600 font-medium">{errors.experience}</p>}
       </div>
 
-      <div className="space-y-5">
-        <label className="flex items-start space-x-4 cursor-pointer group">
-          <div className="relative mt-1">
-            <input
-              type="checkbox"
-              name="agreeToTerms"
-              checked={formData.agreeToTerms}
-              onChange={handleInputChange}
-              className="sr-only"
-            />
-            <div className={`w-6 h-6 border-2 rounded-lg transition-all duration-300 flex items-center justify-center ${
-              formData.agreeToTerms 
-                ? 'bg-indigo-600 border-indigo-600 shadow-lg' 
-                : 'border-gray-300 group-hover:border-indigo-400'
-            }`}>
-              {formData.agreeToTerms && (
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                {/* Error Display */}
+                {error && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-2xl">
+                    <div className="flex items-center space-x-3">
+                      <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-              )}
-            </div>
-          </div>
-          <div className="flex-1">
-            <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors duration-200 font-medium">
-              I agree to the{' '}
-              <a href="/terms" className="text-indigo-600 hover:text-indigo-700 font-semibold hover:underline">
-                Terms and Conditions
-              </a>
-              {' '}and{' '}
-              <a href="/privacy" className="text-indigo-600 hover:text-indigo-700 font-semibold hover:underline">
-                Privacy Policy
-              </a>
-              *
-            </span>
-            {errors.agreeToTerms && <p className="mt-2 text-sm text-red-600 font-medium">{errors.agreeToTerms}</p>}
-          </div>
-        </label>
-
-        <label className="flex items-start space-x-4 cursor-pointer group">
-          <div className="relative mt-1">
-            <input
-              type="checkbox"
-              name="agreeToMarketing"
-              checked={formData.agreeToMarketing}
-              onChange={handleInputChange}
-              className="sr-only"
-            />
-            <div className={`w-6 h-6 border-2 rounded-lg transition-all duration-300 flex items-center justify-center ${
-              formData.agreeToMarketing 
-                ? 'bg-indigo-600 border-indigo-600 shadow-lg' 
-                : 'border-gray-300 group-hover:border-indigo-400'
-            }`}>
-              {formData.agreeToMarketing && (
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              )}
-            </div>
-          </div>
-          <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors duration-200 font-medium">
-            I agree to receive marketing communications about NCLEX Calendar updates and features
-          </span>
-        </label>
+                      <span className="text-red-700 font-medium">{error}</span>
       </div>
     </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-      <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
-        <div className="w-full max-w-2xl">
-          {/* Enhanced Logo and Header */}
-          <div className="text-center mb-10">
-            <div className="w-24 h-24 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl mx-auto mb-8 transform hover:scale-110 transition-all duration-500 hover:rotate-3">
-              <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 leading-tight">
-              Create Account
-            </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">Join NCLEX Calendar and start your nursing journey</p>
-          </div>
-
-          {/* Enhanced Progress Steps */}
-          <div className="flex items-center justify-center mb-10">
-            {[1, 2, 3].map((step) => (
-              <div key={step} className="flex items-center">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold transition-all duration-500 transform hover:scale-110 ${
-                  step <= currentStep
-                    ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-xl'
-                    : 'bg-gray-200 text-gray-500'
-                }`}>
-                  {step < currentStep ? '✓' : step}
-                </div>
-                {step < 3 && (
-                  <div className={`w-20 h-1 mx-3 transition-all duration-500 ${
-                    step < currentStep ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600' : 'bg-gray-200'
-                  }`}></div>
                 )}
-              </div>
-            ))}
-          </div>
 
-          {/* Enhanced Sign Up Form */}
-          <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 lg:p-12 overflow-hidden">
-            {/* Decorative background elements */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/20"></div>
-            <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-2xl"></div>
-            <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-br from-pink-400/10 to-blue-400/10 rounded-full blur-2xl"></div>
-            
-            {/* Subtle border glow */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 p-[1px]">
-              <div className="h-full w-full bg-white rounded-3xl"></div>
-            </div>
-            
-            {/* Content wrapper */}
-            <div className="relative z-10">
-              <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Step Content */}
-                {currentStep === 1 && renderStep1()}
-                {currentStep === 2 && renderStep2()}
-                {currentStep === 3 && renderStep3()}
-
-                {/* Enhanced Navigation Buttons */}
-                <div className="flex items-center justify-between pt-8">
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    disabled={currentStep === 1}
-                    className="group px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-2xl font-semibold transition-all duration-300 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 shadow-md hover:shadow-lg"
-                  >
-                    <span className="flex items-center">
-                      <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                      </svg>
-                      Previous
-                    </span>
-                  </button>
-
-                  {currentStep < 3 ? (
-                    <button
-                      type="button"
-                      onClick={nextStep}
-                      className="group px-10 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white rounded-2xl font-bold transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
-                    >
-                      <span className="flex items-center">
-                        Next Step
-                        <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 100-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </span>
-                    </button>
-                  ) : (
+                {/* Enhanced Submit Button */}
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="group relative px-10 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white rounded-2xl font-bold transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none overflow-hidden"
+                  className="group relative w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white py-5 rounded-2xl font-bold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none overflow-hidden"
                     >
                       {/* Shimmer effect */}
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                       
                       {/* Button content */}
-                      <span className="relative z-10 flex items-center">
+                  <span className="relative z-10 flex items-center justify-center">
                         {isLoading ? (
                           <div className="flex items-center space-x-3">
                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -542,8 +260,6 @@ const SignUp: React.FC = () => {
                       {/* Glow effect */}
                       <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
                     </button>
-                  )}
-                </div>
               </form>
 
               {/* Enhanced Divider */}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 interface LoginFormData {
   email: string;
@@ -16,7 +17,9 @@ const Login: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -24,21 +27,28 @@ const Login: React.FC = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // Clear error when user starts typing
+    if (error) setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const success = await login(formData.email, formData.password);
+      if (success) {
+        // Navigate to MainPage after successful login
+        navigate('/main');
+      } else {
+        setError('Invalid email or password. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred during login. Please try again.');
+    } finally {
       setIsLoading(false);
-      // Handle login logic here
-      console.log('Login attempt:', formData);
-      
-      // Navigate to MainPage after successful login
-      navigate('/main');
-    }, 2000);
+    }
   };
 
   const handleBackToHome = () => {
@@ -185,6 +195,18 @@ const Login: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Error Display */}
+                {error && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-2xl">
+                    <div className="flex items-center space-x-3">
+                      <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-red-700 font-medium">{error}</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Enhanced Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between">

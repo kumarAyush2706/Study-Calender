@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   className?: string;
@@ -15,6 +17,9 @@ const Header: React.FC<HeaderProps> = ({ className = '', onToggleSidebar, isSide
     { id: 2, message: 'Practice test scheduled for tomorrow', time: '1 hour ago', unread: true },
     { id: 3, message: 'Assignment deadline reminder', time: '3 hours ago', unread: false }
   ]);
+  
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,6 +32,11 @@ const Header: React.FC<HeaderProps> = ({ className = '', onToggleSidebar, isSide
   }, []);
 
   const unreadCount = notifications.filter(n => n.unread).length;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header 
@@ -139,13 +149,19 @@ const Header: React.FC<HeaderProps> = ({ className = '', onToggleSidebar, isSide
               <button className="flex items-center space-x-4 p-3 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-2xl transition-all duration-300 transform hover:scale-105">
                 <div className="relative">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                    <span className="text-white text-sm font-bold">KR</span>
+                    <span className="text-white text-sm font-bold">
+                      {user ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </span>
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-emerald-400 to-teal-400 border-2 border-white rounded-full shadow-lg"></div>
                 </div>
                 <div className="hidden lg:block text-left">
-                  <p className="text-sm font-bold text-gray-900">Kuldeep Singh</p>
-                  <p className="text-xs text-gray-600 font-medium">NCLEX Student</p>
+                  <p className="text-sm font-bold text-gray-900">
+                    {user ? user.name : 'Guest User'}
+                  </p>
+                  <p className="text-xs text-gray-600 font-medium">
+                    {user ? user.role : 'Guest'}
+                  </p>
                 </div>
                 <svg className="w-5 h-5 text-gray-400 group-hover:text-purple-500 transition-colors duration-200" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -157,11 +173,17 @@ const Header: React.FC<HeaderProps> = ({ className = '', onToggleSidebar, isSide
                 <div className="p-6 border-b border-gray-100/50">
                   <div className="flex items-center space-x-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                      <span className="text-white text-lg font-bold">KR</span>
+                      <span className="text-white text-lg font-bold">
+                        {user ? user.name.charAt(0).toUpperCase() : 'U'}
+                      </span>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-900">Kuldeep Singh Romana</p>
-                      <p className="text-xs text-gray-500 font-medium">kuldeep@example.com</p>
+                      <p className="text-sm font-bold text-gray-900">
+                        {user ? user.name : 'Guest User'}
+                      </p>
+                      <p className="text-xs text-gray-500 font-medium">
+                        {user ? user.email : 'guest@example.com'}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -178,7 +200,10 @@ const Header: React.FC<HeaderProps> = ({ className = '', onToggleSidebar, isSide
                     </svg>
                     Settings
                   </button>
-                  <button className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-rose-50 hover:to-pink-50 hover:text-rose-600 rounded-xl transition-all duration-200 font-medium">
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-rose-50 hover:to-pink-50 hover:text-rose-600 rounded-xl transition-all duration-200 font-medium"
+                  >
                     <svg className="w-4 h-4 mr-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
                     </svg>
