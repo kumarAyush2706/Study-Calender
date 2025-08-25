@@ -24,212 +24,75 @@ const UpComingClasses: React.FC = () => {
   const scheduledEvents: ScheduledEvent[] = useMemo(() => {
     if (!apiUpcomingClasses || !Array.isArray(apiUpcomingClasses)) return [];
     
-    return (apiUpcomingClasses as any[]).map((classItem: any) => ({
-      id: classItem.id || String(Math.random()),
-      title: classItem.title || classItem.name || 'Untitled Class',
-      date: classItem.date || classItem.scheduledDate || classItem.startDate || new Date().toISOString().split('T')[0],
-      duration: classItem.duration || classItem.length || '90 Min',
-      courseLevel: classItem.courseLevel || classItem.level || 'NCLEX-RN',
-      startTime: classItem.startTime || classItem.time || '19:00 IST',
-      meetingId: classItem.meetingId || classItem.zoomId || classItem.meetingLink || '00000000000',
-      password: classItem.password || classItem.meetingPassword || 'CLASS@123',
-      type: classItem.type || (classItem.isWebinar ? 'webinars' : 'classes'),
-      hasCancelOption: classItem.hasCancelOption || classItem.cancellable || false
-    }));
+    console.log('API Data received:', apiUpcomingClasses); // Debug log
+    
+    return (apiUpcomingClasses as any[]).map((classItem: any, index: number) => {
+      console.log(`Processing item ${index}:`, classItem); // Debug log
+      
+      // Parse the scheduledAt date and format it properly
+      let eventDate = new Date().toISOString().split('T')[0]; // fallback
+      if (classItem.scheduledAt) {
+        try {
+          const date = new Date(classItem.scheduledAt);
+          eventDate = date.toISOString().split('T')[0];
+        } catch (e) {
+          console.error('Error parsing date:', e);
+        }
+      }
+      
+      // Extract time from scheduledAt if available
+      let eventTime = '19:00 IST'; // fallback
+      if (classItem.scheduledAt) {
+        try {
+          const date = new Date(classItem.scheduledAt);
+          eventTime = date.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+          }) + ' IST';
+        } catch (e) {
+          console.error('Error parsing time:', e);
+        }
+      }
+      
+      // Determine if it's a webinar or class based on available fields
+      let eventType: 'classes' | 'webinars' = 'classes';
+      if (classItem.type) {
+        eventType = classItem.type;
+      } else if (classItem.isWebinar) {
+        eventType = 'webinars';
+      } else if (classItem.category && classItem.category.toLowerCase().includes('webinar')) {
+        eventType = 'webinars';
+      } else if (classItem.title && classItem.title.toLowerCase().includes('webinar')) {
+        eventType = 'webinars';
+      }
+      
+      const transformedItem = {
+        id: classItem.id || classItem._id || String(Math.random()),
+        title: classItem.title || classItem.name || classItem.className || `Class ${index + 1}`,
+        date: eventDate,
+        duration: classItem.duration || classItem.length || classItem.classDuration || '90 Min',
+        courseLevel: classItem.courseLevel || classItem.level || classItem.examType || classItem.classLevel || 'NCLEX-RN',
+        startTime: eventTime,
+        meetingId: classItem.meetingId || classItem.zoomId || classItem.meetingLink || classItem.zoomLink || '00000000000',
+        password: classItem.password || classItem.meetingPassword || classItem.zoomPassword || 'CLASS@123',
+        type: eventType,
+        hasCancelOption: classItem.hasCancelOption || classItem.cancellable || classItem.canCancel || false
+      };
+      
+      console.log(`Transformed item ${index}:`, transformedItem); // Debug log
+      return transformedItem;
+    });
   }, [apiUpcomingClasses]);
 
-  // Mock data for the whole month (commented out - now using API data)
-  /*
-  const scheduledEvents: ScheduledEvent[] = [
-    // Week 1 - NCLEX-RN Classes
-    {
-      id: '1',
-      title: 'NCLEX-RN Fundamentals Review',
-      date: '2025-06-17',
-      duration: '90 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '19:00 IST',
-      meetingId: '88246216381',
-      password: 'NCLEX@123',
-      type: 'classes',
-      hasCancelOption: true
-    },
-    {
-      id: '2',
-      title: 'NCLEX-RN Practice Questions',
-      date: '2025-06-18',
-      duration: '120 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '20:00 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    {
-      id: '3',
-      title: 'NCLEX-RN Test Strategies',
-      date: '2025-06-19',
-      duration: '90 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '19:30 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    {
-      id: '4',
-      title: 'NCLEX-RN Critical Thinking',
-      date: '2025-06-20',
-      duration: '120 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '20:00 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    // Week 2 - More NCLEX-RN Classes
-    {
-      id: '5',
-      title: 'NCLEX-RN Pharmacology Review',
-      date: '2025-06-23',
-      duration: '90 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '18:00 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    {
-      id: '6',
-      title: 'NCLEX-RN Medical-Surgical Nursing',
-      date: '2025-06-24',
-      duration: '120 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '19:00 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    {
-      id: '7',
-      title: 'NCLEX-RN Pediatric Nursing',
-      date: '2025-06-25',
-      duration: '90 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '18:30 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    {
-      id: '8',
-      title: 'NCLEX-RN Mental Health Nursing',
-      date: '2025-06-26',
-      duration: '90 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '19:00 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    // Week 3 - Advanced NCLEX-RN Classes
-    {
-      id: '9',
-      title: 'NCLEX-RN Leadership & Management',
-      date: '2025-06-27',
-      duration: '90 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '20:00 IST',
-      password: 'NCLEX@123',
-      meetingId: '82575371817',
-      type: 'classes'
-    },
-    {
-      id: '10',
-      title: 'NCLEX-RN Community Health',
-      date: '2025-06-30',
-      duration: '120 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '19:00 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    // Week 4 - Final NCLEX-RN Classes
-    {
-      id: '11',
-      title: 'NCLEX-RN Comprehensive Review',
-      date: '2025-07-01',
-      duration: '120 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '20:00 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    {
-      id: '12',
-      title: 'NCLEX-RN Mock Exam Practice',
-      date: '2025-07-02',
-      duration: '90 Min',
-      courseLevel: 'NCLEX-RN',
-      startTime: '19:30 IST',
-      meetingId: '82575371817',
-      password: 'NCLEX@123',
-      type: 'classes'
-    },
-    // NCLEX-RN Webinars
-    {
-      id: '13',
-      title: 'NCLEX-RN Success Strategies',
-      date: '2025-06-22',
-      duration: '120 Min',
-      courseLevel: 'All Levels',
-      startTime: '15:00 IST',
-      meetingId: '99887766554',
-      password: 'WEB@456',
-      type: 'webinars'
-    },
-    {
-      id: '14',
-      title: 'NCLEX-RN Study Plan Masterclass',
-      date: '2025-06-29',
-      duration: '150 Min',
-      courseLevel: 'All Levels',
-      startTime: '14:00 IST',
-      meetingId: '11223344556',
-      password: 'NCLEX@789',
-      type: 'webinars'
-    },
-    {
-      id: '15',
-      title: 'NCLEX-RN Exam Day Tips',
-      date: '2025-07-05',
-      duration: '90 Min',
-      courseLevel: 'All Levels',
-      startTime: '16:00 IST',
-      meetingId: '99887766555',
-      password: 'NCLEX@456',
-      type: 'webinars'
-    },
-    {
-      id: '16',
-      title: 'NCLEX-RN Question Analysis',
-      date: '2025-07-06',
-      duration: '120 Min',
-      courseLevel: 'All Levels',
-      startTime: '15:30 IST',
-      meetingId: '11223344557',
-      password: 'NCLEX@789',
-      type: 'webinars'
-    }
-  ];
-  */
-
-  const filteredEvents = scheduledEvents.filter(event => {
+  const filteredEvents: ScheduledEvent[] = scheduledEvents.filter(event => {
+    console.log('Filtering event:', event, 'Active tab:', activeTab); // Debug log
     if (activeTab === 'classes') return event.type === 'classes';
     return event.type === 'webinars';
   });
+
+  console.log('Filtered events:', filteredEvents); // Debug log
+  console.log('Total scheduled events:', scheduledEvents.length); // Debug log
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -306,13 +169,22 @@ const UpComingClasses: React.FC = () => {
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">No Upcoming Classes</h2>
-              <p className="text-gray-600">There are currently no upcoming classes or webinars scheduled.</p>
+              <p className="text-gray-600 mb-4">There are currently no upcoming classes or webinars scheduled.</p>
+              <div className="mt-4 text-sm text-gray-500">
+                <p>Debug Info:</p>
+                <p>API Data: {apiUpcomingClasses ? 'Received' : 'None'}</p>
+                <p>Data Type: {Array.isArray(apiUpcomingClasses) ? 'Array' : typeof apiUpcomingClasses}</p>
+                <p>Data Length: {apiUpcomingClasses && Array.isArray(apiUpcomingClasses) ? (apiUpcomingClasses as any[]).length : 'N/A'}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     );
   }
+
+  // Fallback: if no filtered events, show all events
+  const displayEvents: ScheduledEvent[] = filteredEvents.length > 0 ? filteredEvents : scheduledEvents;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -355,7 +227,7 @@ const UpComingClasses: React.FC = () => {
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredEvents.map((event) => (
+          {displayEvents.map((event) => (
             <div key={event.id} className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
               {/* Card Header */}
               <div className="p-4 border-b border-gray-100 bg-gray-50">
@@ -471,6 +343,18 @@ const UpComingClasses: React.FC = () => {
               </div>
               <div className="text-gray-600 font-medium">Total Events</div>
             </div>
+          </div>
+        </div>
+
+        {/* Debug Section - Remove this after fixing */}
+        <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-yellow-800 mb-2">Debug Information</h3>
+          <div className="text-sm text-yellow-700 space-y-1">
+            <p><strong>Raw API Data:</strong> {JSON.stringify(apiUpcomingClasses, null, 2)}</p>
+            <p><strong>Transformed Events:</strong> {scheduledEvents.length} events</p>
+            <p><strong>Filtered Events:</strong> {filteredEvents.length} events</p>
+            <p><strong>Display Events:</strong> {displayEvents.length} events</p>
+            <p><strong>Active Tab:</strong> {activeTab}</p>
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ export const authAPI = {
 
 // Attendance functions
 export const attendanceAPI = {
-  getCalendar: () => api.get('/api/attendance'),
+  getCalendar: () => api.get('/api/attendance/calendar'),
 };
 
 // Study material functions
@@ -27,7 +27,7 @@ export const courseAPI = {
 
 // Class functions
 export const classAPI = {
-  getUpcoming: () => api.get('/api/classes/upcoming'),
+  getUpcoming: () => api.get('/api/classes/my/upcoming'),
   saveClass: (classId: number) => api.post('/api/classes/save', { classId }),
 };
 

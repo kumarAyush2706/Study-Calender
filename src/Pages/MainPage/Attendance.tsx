@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useAttendance } from '../../hooks/useAPI';
 
 interface AttendanceData {
   date: number;
@@ -10,7 +11,21 @@ const Attendance: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState('2025');
   const [selectedMonth, setSelectedMonth] = useState('February');
 
-  // Mock attendance data for February 2025
+  // Fetch attendance data from API
+  const { data: apiAttendanceData, loading, error } = useAttendance();
+
+  // Transform API data to match our interface
+  const attendanceData: AttendanceData[] = useMemo(() => {
+    if (!apiAttendanceData || !Array.isArray(apiAttendanceData)) return [];
+    
+    return (apiAttendanceData as any[]).map((attendance: any) => ({
+      date: attendance.date || attendance.day || attendance.dateOfMonth || 1,
+      status: attendance.status || attendance.attendanceStatus || 'unmarked'
+    }));
+  }, [apiAttendanceData]);
+
+  // Mock attendance data for February 2025 (commented out - now using API data)
+  /*
   const attendanceData: AttendanceData[] = [
     { date: 1, status: 'present' },
     { date: 2, status: 'present' },
@@ -41,6 +56,7 @@ const Attendance: React.FC = () => {
     { date: 27, status: 'future' },
     { date: 28, status: 'future' }
   ];
+  */
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -89,6 +105,76 @@ const Attendance: React.FC = () => {
   // Get current date for highlighting today
   const today = new Date();
   const currentDate = today.getDate();
+
+  // Calculate attendance summary from API data
+  const presentCount = attendanceData.filter(d => d.status === 'present').length;
+  const absentCount = attendanceData.filter(d => d.status === 'absent').length;
+  const unmarkedCount = attendanceData.filter(d => d.status === 'unmarked').length;
+  const futureCount = attendanceData.filter(d => d.status === 'future').length;
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+              <p className="text-xl text-gray-600">Loading attendance data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Attendance</h2>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No data state
+  if (!attendanceData || attendanceData.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 6a1 1 0 10-2 0v4a1 1 0 102 0V8zm4 0a1 1 0 10-2 0v4a1 1 0 102 0V8z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">No Attendance Data</h2>
+              <p className="text-gray-600">There is currently no attendance data available.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 px-4 sm:px-6 lg:px-8 py-8">
@@ -196,7 +282,7 @@ const Attendance: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Present</p>
-                <p className="text-2xl font-bold text-gray-900">6</p>
+                <p className="text-2xl font-bold text-gray-900">{presentCount}</p>
               </div>
             </div>
           </div>
@@ -210,7 +296,7 @@ const Attendance: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Absent</p>
-                <p className="text-2xl font-bold text-gray-900">1</p>
+                <p className="text-2xl font-bold text-gray-900">{absentCount}</p>
               </div>
             </div>
           </div>
@@ -224,7 +310,7 @@ const Attendance: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Unmarked</p>
-                <p className="text-2xl font-bold text-gray-900">4</p>
+                <p className="text-2xl font-bold text-gray-900">{unmarkedCount}</p>
               </div>
             </div>
           </div>
@@ -238,7 +324,7 @@ const Attendance: React.FC = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Future</p>
-                <p className="text-2xl font-bold text-gray-900">17</p>
+                <p className="text-2xl font-bold text-gray-900">{futureCount}</p>
               </div>
             </div>
           </div>
