@@ -10,6 +10,7 @@ interface ScheduledEvent {
   startTime: string;
   meetingId: string;
   password: string;
+  meetingLink?: string;
   type: 'classes' | 'webinars';
   hasCancelOption?: boolean;
 }
@@ -22,12 +23,26 @@ const UpComingClasses: React.FC = () => {
 
   // Transform API data to match our interface
   const scheduledEvents: ScheduledEvent[] = useMemo(() => {
-    if (!apiUpcomingClasses || !Array.isArray(apiUpcomingClasses)) return [];
+    // Check if data is nested in a 'data' property (common API response structure)
+    let actualData: any = apiUpcomingClasses;
     
-    console.log('API Data received:', apiUpcomingClasses); // Debug log
+    if (apiUpcomingClasses && typeof apiUpcomingClasses === 'object' && 'data' in apiUpcomingClasses) {
+      actualData = (apiUpcomingClasses as any).data;
+      console.log('Found nested data structure, extracted:', actualData);
+    }
     
-    return (apiUpcomingClasses as any[]).map((classItem: any, index: number) => {
-      console.log(`Processing item ${index}:`, classItem); // Debug log
+    if (!actualData || !Array.isArray(actualData)) {
+      console.log('No valid data found:', actualData);
+      console.log('API Data type:', typeof apiUpcomingClasses);
+      console.log('API Data structure:', apiUpcomingClasses);
+      return [];
+    }
+    
+    console.log('Processing data array:', actualData);
+    console.log('Data length:', Array.isArray(actualData) ? actualData.length : 'Not an array');
+    
+    return (actualData as any[]).map((classItem: any, index: number) => {
+      console.log(`Processing item ${index}:`, classItem);
       
       // Parse the scheduledAt date and format it properly
       let eventDate = new Date().toISOString().split('T')[0]; // fallback
@@ -35,6 +50,7 @@ const UpComingClasses: React.FC = () => {
         try {
           const date = new Date(classItem.scheduledAt);
           eventDate = date.toISOString().split('T')[0];
+          console.log(`Date parsed for item ${index}:`, classItem.scheduledAt, '→', eventDate);
         } catch (e) {
           console.error('Error parsing date:', e);
         }
@@ -50,23 +66,13 @@ const UpComingClasses: React.FC = () => {
             minute: '2-digit',
             hour12: true 
           }) + ' IST';
+          console.log(`Time parsed for item ${index}:`, classItem.scheduledAt, '→', eventTime);
         } catch (e) {
           console.error('Error parsing time:', e);
         }
       }
       
-      // Determine if it's a webinar or class based on available fields
-      let eventType: 'classes' | 'webinars' = 'classes';
-      if (classItem.type) {
-        eventType = classItem.type;
-      } else if (classItem.isWebinar) {
-        eventType = 'webinars';
-      } else if (classItem.category && classItem.category.toLowerCase().includes('webinar')) {
-        eventType = 'webinars';
-      } else if (classItem.title && classItem.title.toLowerCase().includes('webinar')) {
-        eventType = 'webinars';
-      }
-      
+      // Map API fields to component interface based on your API response
       const transformedItem = {
         id: classItem.id || classItem._id || String(Math.random()),
         title: classItem.title || classItem.name || classItem.className || `Class ${index + 1}`,
@@ -74,13 +80,14 @@ const UpComingClasses: React.FC = () => {
         duration: classItem.duration || classItem.length || classItem.classDuration || '90 Min',
         courseLevel: classItem.courseLevel || classItem.level || classItem.examType || classItem.classLevel || 'NCLEX-RN',
         startTime: eventTime,
-        meetingId: classItem.meetingId || classItem.zoomId || classItem.meetingLink || classItem.zoomLink || '00000000000',
+        meetingId: classItem.meetingId || classItem.zoomId || classItem.zoomLink || '00000000000',
         password: classItem.password || classItem.meetingPassword || classItem.zoomPassword || 'CLASS@123',
-        type: eventType,
-        hasCancelOption: classItem.hasCancelOption || classItem.cancellable || classItem.canCancel || false
+        meetingLink: classItem.meetingLink || classItem.zoomLink || classItem.meetingUrl || '',
+        type: 'classes' as const, // All your API events are classes
+        hasCancelOption: false // Default to false since your API doesn't have this field
       };
       
-      console.log(`Transformed item ${index}:`, transformedItem); // Debug log
+      console.log(`Transformed item ${index}:`, transformedItem);
       return transformedItem;
     });
   }, [apiUpcomingClasses]);
@@ -103,9 +110,16 @@ const UpComingClasses: React.FC = () => {
     });
   };
 
-  const handleJoinMeeting = (eventId: string) => {
-    console.log(`Joining meeting: ${eventId}`);
-    // Handle join meeting logic here
+  const handleJoinMeeting = (eventId: string, meetingLink?: string) => {
+    console.log(`Joining meeting: ${eventId}`, meetingLink);
+    
+    if (meetingLink) {
+      // Open the meeting link in a new tab
+      window.open(meetingLink, '_blank');
+    } else {
+      // Fallback: show alert if no meeting link
+      alert('Meeting link not available');
+    }
   };
 
   const handleCancelDemo = (eventId: string) => {
@@ -281,29 +295,29 @@ const UpComingClasses: React.FC = () => {
 
               {/* Action Buttons */}
               <div className="p-4 pt-0">
-                {event.hasCancelOption ? (
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={() => handleJoinMeeting(event.id)}
-                      className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-                    >
-                      Join
-                    </button>
-                    <button
-                      onClick={() => handleCancelDemo(event.id)}
-                      className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-                    >
-                      Cancel Demo
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => handleJoinMeeting(event.id)}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-                  >
-                    Join
-                  </button>
-                )}
+                                 {event.hasCancelOption ? (
+                   <div className="flex space-x-3">
+                     <button
+                       onClick={() => handleJoinMeeting(event.id, event.meetingLink)}
+                       className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+                     >
+                       Join
+                     </button>
+                     <button
+                       onClick={() => handleCancelDemo(event.id)}
+                       className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+                     >
+                       Cancel Demo
+                     </button>
+                   </div>
+                 ) : (
+                   <button
+                     onClick={() => handleJoinMeeting(event.id, event.meetingLink)}
+                     className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+                   >
+                     Join
+                   </button>
+                 )}
               </div>
             </div>
           ))}
